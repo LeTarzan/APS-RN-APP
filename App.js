@@ -9,8 +9,8 @@ export default class App extends React.Component {
     return (
       <Router>
         <Stack key="root">
-          <Scene key="home" component={HomeScreen} title="home" initial />
-          <Scene key="list" component={ListScreen} title="list" />
+          <Scene key="home" component={HomeScreen} title="Home" initial />
+          <Scene key="list" component={ListScreen} title="Dashboard" />
         </Stack>
       </Router>
     );
