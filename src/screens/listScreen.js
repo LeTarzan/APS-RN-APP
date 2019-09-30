@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, Image, Switch } from 'react-native';
 import { Actions } from 'react-native-router-flux'
 
-
 class ListScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -11,12 +10,13 @@ class ListScreen extends React.Component {
       switchValue: false
     }
     this.getDataFromAPI = this.getDataFromAPI.bind(this)
-    this.toggleSwith = this.toggleSwith.bind(this)
+    this.toggleSwitch = this.toggleSwitch.bind(this)
     this.tableData = this.tableData.bind(this)
+    this.verifySwitch = this.verifySwitch.bind(this)
   }
 
   async getDataFromAPI() {
-    await fetch("https://4ab7bda7.ngrok.io/arduino",
+    await fetch("https://4ab7bda7.ngrok.io/arduino/1",
       {
         method: 'GET',
         headers: {
@@ -41,8 +41,17 @@ class ListScreen extends React.Component {
       .catch(err => console.log('error... ', err))
   }
 
-  toggleSwith(value) {
+  toggleSwitch(value) {
     this.setState({ switchValue: value })
+  }
+
+  verifySwitch() {
+    if (this.state.switchValue) { 
+      console.log('Entrou..')
+      setTimeout(() => {
+        this.getDataFromAPI()
+      }, 5000);
+    }
   }
 
   tableData() {
@@ -60,28 +69,26 @@ class ListScreen extends React.Component {
   render() {
     return (
       <>
-          <View style={styles.header}>
-            <Image style={styles.foto} source={require('../images/leaf2.png')} />
-          </View>
+        <View style={styles.header}>
+          <Image style={styles.foto} source={require('../images/leaf2.png')} />
+        </View>
 
-          <View style={styles.container}>
-            <Text style={styles.texts}>{this.state.switchValue ? 'Desligar' : 'Ligar'}</Text>
-            <Switch
-              style={{ marginTop: 10 }}
-              onValueChange={this.toggleSwith}
-              value={this.state.switchValue}
-            />
-            <TouchableHighlight onPress={() => this.getDataFromAPI()}>
-              <Text style={styles.texts}>Consultar DB</Text>
-            </TouchableHighlight>
-            {this.tableData()}
-          </View>
+        <View style={styles.container}>
+          <Text style={styles.texts}>{this.state.switchValue ? 'Desligar' : 'Ligar'}</Text>
+          <Switch
+            style={{ marginTop: 10 }}
+            onValueChange={this.toggleSwitch}
+            value={this.state.switchValue}
+          />
+          {this.tableData()}
+          {this.verifySwitch()}
+        </View>
 
-          <View style={styles.footer}>
-            <TouchableHighlight onPress={() => Actions.home()}>
-              <Text style={styles.texts}>Voltar para home</Text>
-            </TouchableHighlight>
-          </View>
+        <View style={styles.footer}>
+          <TouchableHighlight onPress={() => Actions.home()}>
+            <Text style={styles.texts}>Voltar para home</Text>
+          </TouchableHighlight>
+        </View>
       </>
     );
   }
@@ -100,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
   },
   foto: {
     marginTop: 20,
@@ -114,7 +121,7 @@ const styles = StyleSheet.create({
     color: '#008000',
   },
   footer: {
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
     marginBottom: 10
   }
 });

@@ -4,13 +4,15 @@ import { Router, Stack, Scene } from 'react-native-router-flux'
 import HomeScreen from './src/screens/homeScreen'
 import ListScreen from './src/screens/listScreen'
 
+
 export default class App extends React.Component {
   render() {
+    console.disableYellowBox = true;
     return (
       <Router>
         <Stack key="root">
-          <Scene key="home" component={HomeScreen} title="Home" initial />
-          <Scene key="list" component={ListScreen} title="Dashboard" />
+          <Scene type="reset" key="home" component={HomeScreen} title="Home" initial="true" />
+          <Scene type="reset" key="list" component={ListScreen} title="Dashboard" />
         </Stack>
       </Router>
     );
