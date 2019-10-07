@@ -7,7 +7,8 @@ class ListScreen extends React.Component {
     super(props)
     this.state = {
       lista: [],
-      switchValue: false
+      switchValue: false,
+      linkAPI: 'https://661c617d.ngrok.io'
     }
     this.getDataFromAPI = this.getDataFromAPI.bind(this)
     this.toggleSwitch = this.toggleSwitch.bind(this)
@@ -16,7 +17,8 @@ class ListScreen extends React.Component {
   }
 
   async getDataFromAPI() {
-    await fetch("https://4ab7bda7.ngrok.io/arduino/1",
+    let link = this.state.linkAPI
+    await fetch(link + "/arduino/1",
       {
         method: 'GET',
         headers: {
@@ -46,48 +48,64 @@ class ListScreen extends React.Component {
   }
 
   verifySwitch() {
-    if (this.state.switchValue) { 
+    if (this.state.switchValue) {
       console.log('Entrou..')
       setTimeout(() => {
         this.getDataFromAPI()
       }, 5000);
+    } else {
+      this.state.lista = null
     }
   }
 
   tableData() {
-    if (this.state.lista.length !== 0) {
-      return (
-        <>
-          <Text style={styles.texts}>Nível de luz: {this.state.lista.l_lightness}</Text>
-          <Text style={styles.texts}>Temperatura: {this.state.lista.l_temperature}</Text>
-          <Text style={styles.texts}>Umidade: {this.state.lista.l_moisture}</Text>
-        </>
-      )
+    try {
+      if(!this.state.switchValue){
+        return <></>
+      }
+      if (this.state.lista.length !== 0) {
+        return (
+          <>
+            <Text style={styles.texts}>Umidade do Solo: {this.state.lista.l_moistureg}</Text>
+            <Text style={styles.texts}>Temperatura: {this.state.lista.l_temperature}</Text>
+            <Text style={styles.texts}>Umidade do Ar: {this.state.lista.l_moisture}</Text>
+          </>
+        )
+      }
+    } catch (err) {
+      console.log('hmm', err)
     }
   }
 
   render() {
     return (
       <>
-        <View style={styles.header}>
-          <Image style={styles.foto} source={require('../images/leaf2.png')} />
-        </View>
-
         <View style={styles.container}>
-          <Text style={styles.texts}>{this.state.switchValue ? 'Desligar' : 'Ligar'}</Text>
-          <Switch
-            style={{ marginTop: 10 }}
-            onValueChange={this.toggleSwitch}
-            value={this.state.switchValue}
-          />
-          {this.tableData()}
-          {this.verifySwitch()}
-        </View>
 
-        <View style={styles.footer}>
-          <TouchableHighlight onPress={() => Actions.home()}>
-            <Text style={styles.texts}>Voltar para home</Text>
-          </TouchableHighlight>
+          <View style={styles.header}>
+            <Image style={styles.foto} source={require('../images/leaf2.png')} />
+          </View>
+
+          <View>
+            <Text style={styles.texts}>GARDUINO</Text>
+          </View>
+
+          <View style={styles.containerContent}>
+            <Text style={styles.texts}>{this.state.switchValue ? 'Desligar' : 'Ligar'}</Text>
+            <Switch
+              style={{ marginTop: 10 }}
+              onValueChange={this.toggleSwitch}
+              value={this.state.switchValue}
+            />
+            {this.tableData()}
+            {this.verifySwitch()}
+          </View>
+
+          <View style={styles.footer}>
+            <TouchableHighlight onPress={() => Actions.home()}>
+              <Text style={styles.texts}>Voltar para home</Text>
+            </TouchableHighlight>
+          </View>
         </View>
       </>
     );
@@ -98,6 +116,10 @@ export default ListScreen;
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  containerContent: {
     flex: 2,
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -117,6 +139,7 @@ const styles = StyleSheet.create({
   },
   texts: {
     fontSize: 20,
+    fontWeight: 'bold',
     textAlign: 'center',
     color: '#008000',
   },

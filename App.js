@@ -3,7 +3,7 @@ import { Router, Stack, Scene } from 'react-native-router-flux'
 
 import HomeScreen from './src/screens/homeScreen'
 import ListScreen from './src/screens/listScreen'
-
+import defaultScreen from './src/screens/defaultScreen'
 
 export default class App extends React.Component {
   render() {
@@ -13,6 +13,7 @@ export default class App extends React.Component {
         <Stack key="root">
           <Scene type="reset" key="home" component={HomeScreen} title="Home" initial="true" />
           <Scene type="reset" key="list" component={ListScreen} title="Dashboard" />
+          <Scene type="reset" key="defaultScreen" component={defaultScreen} title="Definir um padrão" />
         </Stack>
       </Router>
     );
